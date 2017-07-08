@@ -1,0 +1,46 @@
+close all; clear; clc;
+
+%determine the value of N
+        % store the start of the signal
+load('Signal2.mat')
+%initialize the start index
+N_start = 1;                        %initialize the start of the index to 0
+N_set=[32,64,128];                  %possible value of ofdm symbol without cyclic prefix(cp)
+N_cp = N_set .*(1/4);               %length of cyclic prefix
+flg_start = false;
+N_fft = 0;
+
+while(~(flg_start))
+    %check for N = 32
+    if(~(flg_start))
+        sig_temp1 = Signal(1,N_start:N_start+N_cp(1)-1);
+        sig_temp2 = Signal(1,N_start+N_set(1):N_start+N_set(1)+N_cp(1)-1);
+        if((sig_temp1 * ctranspose(sig_temp2)) >= sig_temp1*ctranspose(sig_temp1)*.99)
+            flg_start = true;
+            N_fft = 32;
+        end 
+    end
+
+    %check for N = 64
+    if(~(flg_start))
+        sig_temp1 = Signal(1,N_start:N_start+N_cp(2)-1);
+        sig_temp2 = Signal(1,N_start+N_set(2):N_start+N_set(2)+N_cp(2)-1);
+        if((sig_temp1 * ctranspose(sig_temp2)) >= sig_temp1*ctranspose(sig_temp1)*.99)
+            flg_start = true;
+            N_fft = 64;
+        end
+    end
+        
+        %check for N = 128
+    if(~(flg_start))
+        sig_temp1 = Signal(1,N_start:N_start+N_cp(3)-1);
+        sig_temp2 = Signal(1,N_start+N_set(3):N_start+N_set(3)+N_cp(3)-1);
+        if((sig_temp1 * ctranspose(sig_temp2)) >= sig_temp1*ctranspose(sig_temp1)*.99)
+            flg_start = true;
+            N_fft = 128;
+        else
+             N_start = N_start+1;
+        end
+    end
+   
+end
